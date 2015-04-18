@@ -1,0 +1,20 @@
+{
+  "name": "easy-customer",
+  "version": "0.0.0",
+  "homepage": "https://github.com/darshansheta/easy-customer",
+  "authors": [
+    "Darshan Sheta <darshan.denz@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.*",
+    "bootstrap": "~3.3.4"
+  }
+}
