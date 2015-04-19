@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="easyCustomerApp">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,6 +13,7 @@
 
 	<!-- Bootstrap core CSS -->
 	<link href="{{asset('/')}}assets/bower/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{asset('/')}}assets/bower/font-awesome/css/font-awesome.min.css">
 
 	<!-- Custom styles for this template -->
 	<link href="{{asset('/')}}assets/basic/css/style.css" rel="stylesheet">
@@ -40,7 +41,7 @@
 	            <span class="icon-bar"></span>
 	            <span class="icon-bar"></span>
 	          </button>
-	          <a class="navbar-brand" href="#">Project name</a>
+	          <a class="navbar-brand" href="#">Easy Customer</a>
 	        </div>
 	        <div id="navbar" class="collapse navbar-collapse">
 	          <ul class="nav navbar-nav">
@@ -61,36 +62,20 @@
 	            </li>
 	          </ul>
 	          <ul class="nav navbar-nav navbar-right">
-	            <li class="active"><a href="#">Home</a></li>
-	            <li><a href="#about">About</a></li>
-	            <li><a href="#contact">Contact</a></li>
-	            <li class="dropdown">
-	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-	              <ul class="dropdown-menu" role="menu">
-	                <li><a href="#">Action</a></li>
-	                <li><a href="#">Another action</a></li>
-	                <li><a href="#">Something else here</a></li>
-	                <li class="divider"></li>
-	                <li class="dropdown-header">Nav header</li>
-	                <li><a href="#">Separated link</a></li>
-	                <li><a href="#">One more separated link</a></li>
-	              </ul>
-	            </li>
+	            <li ui-sref-active="active"><a href="#" ui-sref="login"><i class="fa fa-power-off"></i> Login</a></li>
+	            <li ui-sref-active="active"><a href="#about" ui-sref="register">Register</a></li>
 	          </ul>
 	        </div><!--/.nav-collapse -->
 	      </div>
 	    </nav>
 
 	    <!-- Begin page content -->
-	    <div class="container">
-	    	<!--navbar in main container-->
+	    <div class="container" id="main-container" ui-view>
+	    	<div class="alert alert-success">Hello Darshan <a href="#" class="close" data-dismiss="alert">&times;</a></div>
+			<div class="page-header">
+				<h2>Sticky footer with fixed navbar 2 + 5 = @{{2+5}}</h2>
+			</div>
 
-	    	<!--navbar in main container | end-->
-	      <div class="page-header">
-	        <h1>Sticky footer with fixed navbar</h1>
-	      </div>
-	      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body > .container</code>.</p>
-	      <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
 	    </div>
 
 	    <footer class="footer">
@@ -101,6 +86,11 @@
 
 	<script src="{{asset('/')}}assets/bower/jquery/dist/jquery.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/angular/angular.min.js"></script>
+	{{--<script src="{{asset('/')}}assets/bower/angular-route/angular-route.min.js"></script>--}}
+	<script src="{{asset('/')}}assets/bower/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/angular-local-storage/dist/angular-local-storage.min.js"></script>
+	<script src="{{asset('/')}}app/easyCustomerApp/app.js"></script>
 	{{--<script src="{{asset('/')}}assets/basic/js/ie10-viewport-bug-workaround.js"></script>--}}
 
 </body>

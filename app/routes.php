@@ -15,3 +15,9 @@ Route::get('/', function()
 {
 	return View::make('hello');
 });
+
+Route::group(array('prefix' => 'api'), function(){
+	//Route::resource('auth','AuthController');
+	Route::post('auth/register','AuthController@register');
+	Route::post('auth/verify','AuthController@verify');
+});
