@@ -2,7 +2,7 @@
 
 	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule'])
 	.constant('AppConstant', {
-		apiRootPath:'http://localhost/easy-customer/public/'
+		apiRootPath:'http://localhost/easy-customer/public/api'
 	})
 	.config(function (localStorageServiceProvider) {
 		localStorageServiceProvider
@@ -37,17 +37,40 @@
 	}]);
 	
 	// Controllers ================================================================================
-	app.controller('AuthController',['$scope','Notification',function($scope, Notification){
+	app.controller('AuthController',['$scope','AuthenticationService',function($scope, AuthenticationService){
 		$scope.init = {};
 		$scope.newUser = {};
+
+		$scope.registerUser = function (isValid) {
+			if (isValid) {
+				$('#register-user-form').block(); 
+				AuthenticationService.register($scope.newUser).success(function(response){
+					$scope.registerUserForm.$setPristine();
+					$('#register-user-form').unblock();
+				}).error(function(){
+					$('#register-user-form').unblock();
+				});
+			}
+		};
 	}]);
 	// Factory ====================================================================================
 	app.factory('Notification', [function(){
 		return {
 			show:function(response){
+				$("#notfication-container").remove();
 				var type = (response.success)? 'success' : 'danger' ;
 				var message = response.message || response.error;
-				$('#main-container').prepend('<div class="alert alert-'+type+'">'+message+' <a href="#" class="close" data-dismiss="alert">&times;</a></div>');
+				var notficationContainer = $('<div id="notfication-container"></div>');
+				if (typeof message == "string") {
+					notficationContainer.append('<div class="alert alert-'+type+'">'+message+' <a href="#" class="close" data-dismiss="alert">&times;</a></div>');
+				$('#main-container').prepend(notficationContainer);
+				} else if(typeof message == "object") {
+					for (var index in message ) {
+						notficationContainer.append('<div class="alert alert-'+type+'">'+message[index]+' <a href="#" class="close" data-dismiss="alert">&times;</a></div>');
+					}
+					$("#main-container").prepend(notficationContainer);
+				}
+				$(window).scrollTop();
 			}
 		};
 	}]);
@@ -65,5 +88,65 @@
 			}
 		}
 	}]);
+
+	app.factory("AuthenticationService", ['$http','SessionService','Notification','AppConstant',function($http, SessionService, Notification,AppConstant) {
+			var apiRootPath = AppConstant.apiRootPath;
+			var cacheSession   = function() {
+				SessionService.set('authenticated', true);
+			};
+
+			var uncacheSession = function() {
+				SessionService.unset('authenticated');
+			};
+
+			var loginError = function(response) {
+				Notification.show(response);
+			};
+
+			/*var sanitizeCredentials = function(credentials) {
+				return {
+					username: $sanitize(credentials.username),
+					password: $sanitize(credentials.password),
+					csrf_token: CSRF_TOKEN
+				};
+			};*/
+
+			return {
+				register: function(newUser){
+					return $http({
+						method: 'POST',
+						url:apiRootPath+'/auth/register',
+						data:newUser
+					}).success(function(response){
+						Notification.show(response);
+					}).error(function(response){
+						Notification.show(response);
+					});
+				},
+				login: function(credentials) {
+					return $http({
+						method: 'POST',
+						url: apiRootPath+'auth/login',
+						data: credentials
+					}).success(function(response){
+						
+						Notification.show(response);
+						SessionService.set('authenticated', true);
+						//console.log(response);
+					}).error(function(response){
+						Notification.show(response);
+						//console.log(response);
+					});
+				},
+				logout: function() {
+					var logout = $http.get(apiRootPath+"auth/logout");
+					logout.success(uncacheSession);
+					return logout;
+				},
+				isLoggedIn: function() {
+					return SessionService.get('authenticated');
+				}
+			};
+		}]);
 
 }());

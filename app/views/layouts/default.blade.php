@@ -86,6 +86,7 @@
 
 	<script src="{{asset('/')}}assets/bower/jquery/dist/jquery.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/blockUI/jquery.blockUI.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular/angular.min.js"></script>
 	{{--<script src="{{asset('/')}}assets/bower/angular-route/angular-route.min.js"></script>--}}
 	<script src="{{asset('/')}}assets/bower/angular-ui-router/release/angular-ui-router.min.js"></script>
