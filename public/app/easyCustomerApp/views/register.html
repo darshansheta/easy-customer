@@ -1,4 +1,5 @@
-<div class="panel panel-default">
+<div class="row">
+<div class="panel panel-default" id="register-user-form-panel">
 	  <div class="panel-heading">
 			<h3 class="panel-title">Register Here</h3>
 	  </div>
@@ -7,25 +8,25 @@
 					<div class="form-group" ng-class="{'has-error' : registerUserForm.name.$invalid && !registerUserForm.name.$pristine }">
 						<label for="" class="col-sm-2 control-label">Name</label>
 						<div class="col-sm-10">
-							<input type="text" ng-model="newUser.name" name="name" class="form-control" id="" placeholder="Name" ng-maxlength="100">
+							<input type="text" required ng-model="newUser.name" name="name" class="form-control" id="" placeholder="Name" ng-maxlength="100">
 						</div>
 					</div>
 					<div class="form-group" ng-class="{'has-error' : registerUserForm.email.$invalid && !registerUserForm.email.$pristine }">
 						<label for="" class="col-sm-2 control-label">Email</label>
 						<div class="col-sm-10">
-							<input type="email" ng-model="newUser.email" name="email" class="form-control" id="" placeholder="Email" ng-maxlength="200">
+							<input type="email" required ng-model="newUser.email" name="email" class="form-control" id="" placeholder="Email" ng-maxlength="200">
 						</div>
 					</div>
 					<div class="form-group" ng-class="{'has-error' : registerUserForm.password.$invalid && !registerUserForm.password.$pristine }">
 						<label for="" class="col-sm-2 control-label">Password</label>
 						<div class="col-sm-10">
-							<input type="password" ng-model="newUser.password" name="password" class="form-control" id="" placeholder="Password">
+							<input type="password" required ng-model="newUser.password" name="password" class="form-control" id="" placeholder="Password">
 						</div>
 					</div>
 					<div class="form-group" ng-class="{'has-error' : (registerUserForm.cpassword.$invalid || newUser.password != newUser.cpassword ) && !registerUserForm.cpassword.$pristine }">
 						<label for="" class="col-sm-2 control-label">Confirm Password</label>
 						<div class="col-sm-10">
-							<input type="password" ng-model="newUser.cpassword" name="cpassword" class="form-control" id="" placeholder="Password">
+							<input type="password" required ng-model="newUser.cpassword" name="cpassword" class="form-control" id="" placeholder="Password">
 						</div>
 					</div>
 			
@@ -34,7 +35,7 @@
 							<button type="button" ng-disabled="registerUserForm.$invalid || newUser.password != newUser.cpassword" class="btn btn-primary" ng-click="registerUser(registerUserForm.$valid)">Submit</button>
 						</div>
 					</div>
-					{{registerUserForm.$valid}}
 			</form>
 	  </div>
+</div>
 </div>

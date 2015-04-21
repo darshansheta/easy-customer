@@ -43,12 +43,13 @@
 
 		$scope.registerUser = function (isValid) {
 			if (isValid) {
-				$('#register-user-form').block(); 
+				$('#register-user-form-panel').block(); 
 				AuthenticationService.register($scope.newUser).success(function(response){
 					$scope.registerUserForm.$setPristine();
-					$('#register-user-form').unblock();
+					$scope.newUser = {};
+					$('#register-user-form-panel').unblock();
 				}).error(function(){
-					$('#register-user-form').unblock();
+					$('#register-user-form-panel').unblock();
 				});
 			}
 		};
