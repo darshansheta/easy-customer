@@ -16,8 +16,27 @@ Route::get('/', function()
 	return View::make('hello');
 });
 
+Route::get('/detect', function()
+{
+	echo "<pre>";
+	print_r(Request::header('Connectiondf'));
+	exit;
+	echo "<br>Agent::device()-".Agent::device();;
+	echo "<br>Agent::platform();>-".Agent::platform();;
+	echo "<br>Agent::browser()-".Agent::browser();;
+	$browser = Agent::browser();
+$version = Agent::version($browser);
+	echo "<br>-version".$version;
+	echo "<br>-";
+	$platform = Agent::platform();
+$version = Agent::version($platform);
+	echo "<br>version-".$version;
+	exit;
+});
+
 Route::group(array('prefix' => 'api'), function(){
 	//Route::resource('auth','AuthController');
 	Route::post('auth/register','AuthController@register');
-	Route::post('auth/verify','AuthController@verify');
+	Route::post('auth/login','AuthController@login');
+	Route::post('auth/logout','AuthController@logout');
 });

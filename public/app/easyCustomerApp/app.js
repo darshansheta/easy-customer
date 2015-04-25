@@ -4,6 +4,62 @@
 	.constant('AppConstant', {
 		apiRootPath:'http://localhost/easy-customer/public/api'
 	})
+	.config(['$httpProvider', function($httpProvider) {
+		//$httpProvider.defaults.useXDomain = true;
+		//delete $httpProvider.defaults.headers.common['X-Requested-With'];
+		/*var logsOutUserOn401 = function($location, $q, SessionService, Notification) {
+			var success = function(response) {
+				return response;
+			};
+
+			var error = function(response) {
+				if(response.status === 401) {
+					SessionService.unset('authenticated');
+					$location.path('/login');
+					
+					//To show errot using template notification plugin 
+					setTimeout(function(){
+						Notification.show(response.data);
+						//console.log(response)
+						//Metronic.initAjax();
+					},500);
+					
+				}
+				return $q.reject(response);
+			};
+
+			return function(promise) {
+				return promise.then(success, error);
+			};
+		};
+
+		$httpProvider.responseInterceptors.push(logsOutUserOn401);*/
+
+		$httpProvider.interceptors.push( function($q, SessionService,Notification,$location) {
+		            return {
+		                'request': function (config) {
+		                    config.headers = config.headers || {};
+		                    var token = SessionService.get("token");
+		                    token = token || "";
+		                    config.headers.token = token;
+		                    
+		                    return config;
+		                },
+		                'responseError': function(response) {
+		                	SessionService.unset('authenticated');
+		                	SessionService.unset('token');
+		                    console.log('status:'+response.status)
+		                    if(response.status === 401 || response.status === 403) {
+		                        $location.path('/login');
+		                    }
+		                    setTimeout(function(){
+		                    	Notification.show(response.data);
+		                    },500);
+		                    return $q.reject(response);
+		                }
+		            };
+		        });
+	}])
 	.config(function (localStorageServiceProvider) {
 		localStorageServiceProvider
 			.setPrefix('easyCustomerApp')
@@ -20,26 +76,48 @@
 		$stateProvider
 			.state('home',{
 				url:'/home',
-				templateUrl:baseUrl+'home.html'
+				templateUrl:baseUrl+'home.html',
+				data: {
+				       requireLogin: false
+				     }
 			})
 			.state('register',{
 				url:'/register',
 				templateUrl:baseUrl+'register.html',
-				controller: 'AuthController'
+				controller: 'AuthController',
+				data: {
+				       requireLogin: false
+				     }
 			})
 			.state('login',{
 				url:'/login',
 				templateUrl:baseUrl+'login.html',
-				controller: 'AuthController'
+				controller: 'AuthController',
+				data: {
+				       requireLogin: false
+				     }
 			})
 
 
 	}]);
-	
+	app.run(function ($rootScope, $state, SessionService) {
+
+	  $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+	    var requireLogin = toState.data.requireLogin;
+	    var  token = SessionService.get('token');
+	    if (requireLogin && (token == '' || token == null)) {
+	      event.preventDefault();
+
+	       return $state.go('login');
+	    }
+	  });
+
+	});
 	// Controllers ================================================================================
 	app.controller('AuthController',['$scope','AuthenticationService',function($scope, AuthenticationService){
 		$scope.init = {};
 		$scope.newUser = {};
+		$scope.loginUser = {};
 
 		$scope.registerUser = function (isValid) {
 			if (isValid) {
@@ -50,6 +128,18 @@
 					$('#register-user-form-panel').unblock();
 				}).error(function(){
 					$('#register-user-form-panel').unblock();
+				});
+			}
+		};
+		$scope.doLogin = function (isValid) {
+			if (isValid) {
+				$('#login-user-form-panel').block(); 
+				AuthenticationService.login($scope.loginUser).success(function(response){
+					$scope.loginUserForm.$setPristine();
+					$scope.loginUser = {};
+					$('#login-user-form-panel').unblock();
+				}).error(function(){
+					$('#login-user-form-panel').unblock();
 				});
 			}
 		};
@@ -79,12 +169,21 @@
 	app.factory("SessionService",[ 'localStorageService', function(localStorageService) {
 		return {
 			get: function(key) {
+				if(key=="token"){
+					return localStorageService.cookie.get(key);
+				}
 				return localStorageService.get(key);
 			},
 			set: function(key, val) {
+				if(key=="token"){
+					localStorageService.cookie.set(key, val);
+				}
 				return localStorageService.set(key, val);
 			},
 			unset: function(key) {
+				if(key=="token"){
+					localStorageService.cookie.remove(key);
+				}
 				return localStorageService.remove(key);
 			}
 		}
@@ -127,10 +226,10 @@
 				login: function(credentials) {
 					return $http({
 						method: 'POST',
-						url: apiRootPath+'auth/login',
+						url: apiRootPath+'/auth/login',
 						data: credentials
 					}).success(function(response){
-						
+						SessionService.set('token',response.token)
 						Notification.show(response);
 						SessionService.set('authenticated', true);
 						//console.log(response);

@@ -88,3 +88,28 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+Route::filter('auth.token', function($route, $request)
+{
+    $token = $request->header('token');
+    
+
+    $login_token =  LoginToken::where('token',$token)->first();
+
+    if( !$login_token || !Auth::onceUsingId($login_token->user_id)) {
+
+        $response = Response::json([
+            'success' => false,
+            'message' => 'Not authenticated',
+            //'code' => 401,
+            ],
+            401
+        );
+        
+        $response->header('Content-Type', 'application/json');
+    	return $response;
+    }
+    //Auth::once(array('api_token'=>$payload,'push_token'=>$pushtoken));
+    //return $user;
+
+});
