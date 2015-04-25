@@ -114,17 +114,24 @@ class Authcontroller extends \BaseController {
 
 		if (Auth::attempt(array('email' => $only['email'], 'password' => $only['password'])))
 		{
-		    $login_token =new LoginToken();
-		    $login_token->user_id = Auth::id(); 
-		    $login_token->token = md5(Auth::id().Auth::user()->email.date('YmdHis'));
-		    $login_token->os = Agent::platform()."|".Agent::version(Agent::platform());
-		    $login_token->browser = Agent::browser()."|".Agent::version(Agent::browser());
-			$login_token->save();
-
+		    $token = md5(Auth::id().Auth::user()->email.Agent::platform().Agent::browser());
+		    $login_token = LoginToken::where('user_id',Auth::id())->where('token',$token)->first();
+		    if(empty($login_token)){
+		    	$login_token = new LoginToken();
+			    $login_token->user_id = Auth::id(); 
+			    $login_token->token = $token;
+			    $login_token->os = Agent::platform();
+			    $login_token->os_version = Agent::version(Agent::platform());
+			    $login_token->browser = Agent::browser();
+			    $login_token->browser_version = Agent::version(Agent::browser());
+				$login_token->save();
+			}else{
+				$login_token->touch();
+			}
 			Auth::logout();
 
 			$response['success'] = true;
-			$response['token'] = $login_token->token;
+			$response['token'] = $token;
 			$response['message'] = "Logged In sucessfully.";
 			return $response;
 

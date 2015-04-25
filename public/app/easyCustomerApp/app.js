@@ -1,6 +1,6 @@
 (function(){
 
-	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule'])
+	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule','ngAnimate'])
 	.constant('AppConstant', {
 		apiRootPath:'http://localhost/easy-customer/public/api'
 	})
@@ -81,6 +81,14 @@
 				       requireLogin: false
 				     }
 			})
+			.state('dashboard',{
+				url:'/dashboard',
+				templateUrl:baseUrl+'dashboard.html',
+				controller: 'dashBoardController',
+				data: {
+				       requireLogin: true
+				     }
+			})
 			.state('register',{
 				url:'/register',
 				templateUrl:baseUrl+'register.html',
@@ -91,6 +99,14 @@
 			})
 			.state('login',{
 				url:'/login',
+				templateUrl:baseUrl+'login.html',
+				controller: 'AuthController',
+				data: {
+				       requireLogin: false
+				     }
+			})
+			.state('logout',{
+				url:'/logout',
 				templateUrl:baseUrl+'login.html',
 				controller: 'AuthController',
 				data: {
@@ -111,14 +127,21 @@
 	       return $state.go('login');
 	    }
 	  });
-
+	  var token = SessionService.get('token');
+	   $rootScope.requireLogin = function(){
+	   	 var  token = SessionService.get('token');
+	   	 return !(token == '' || token == null);
+	   };
 	});
 	// Controllers ================================================================================
-	app.controller('AuthController',['$scope','AuthenticationService',function($scope, AuthenticationService){
+	app.controller('AuthController',['$scope','AuthenticationService','$state',function($scope, AuthenticationService,$state){
 		$scope.init = {};
 		$scope.newUser = {};
 		$scope.loginUser = {};
-
+		if($state.current.name == 'logout'){
+			AuthenticationService.logout();
+			$state.go('login');
+		}
 		$scope.registerUser = function (isValid) {
 			if (isValid) {
 				$('#register-user-form-panel').block(); 
@@ -143,6 +166,9 @@
 				});
 			}
 		};
+	}]);
+	app.controller('dashBoardController',['$scope',function($scope){
+
 	}]);
 	// Factory ====================================================================================
 	app.factory('Notification', [function(){
@@ -189,7 +215,7 @@
 		}
 	}]);
 
-	app.factory("AuthenticationService", ['$http','SessionService','Notification','AppConstant',function($http, SessionService, Notification,AppConstant) {
+	app.factory("AuthenticationService", ['$http','SessionService','Notification','AppConstant','$state',function($http, SessionService, Notification,AppConstant,$state) {
 			var apiRootPath = AppConstant.apiRootPath;
 			var cacheSession   = function() {
 				SessionService.set('authenticated', true);
@@ -231,6 +257,7 @@
 					}).success(function(response){
 						SessionService.set('token',response.token)
 						Notification.show(response);
+						$state.go('dashboard');
 						SessionService.set('authenticated', true);
 						//console.log(response);
 					}).error(function(response){
@@ -239,9 +266,11 @@
 					});
 				},
 				logout: function() {
-					var logout = $http.get(apiRootPath+"auth/logout");
-					logout.success(uncacheSession);
-					return logout;
+					//var logout = $http.get(apiRootPath+"auth/logout");
+					//logout.success(uncacheSession);
+					//return logout;
+					SessionService.unset('token');
+					SessionService.unset('authenticated');
 				},
 				isLoggedIn: function() {
 					return SessionService.get('authenticated');

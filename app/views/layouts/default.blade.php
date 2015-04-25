@@ -45,10 +45,10 @@
 	        </div>
 	        <div id="navbar" class="collapse navbar-collapse">
 	          <ul class="nav navbar-nav">
-	            <li class="active"><a href="#">Home</a></li>
-	            <li><a href="#about">About</a></li>
-	            <li><a href="#contact">Contact</a></li>
-	            <li class="dropdown">
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="dashboard">Dashboard</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#about">About</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#contact">Contact</a></li>
+	            <li class="dropdown"  ui-sref-active="open" ng-show="requireLogin()">
 	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
 	              <ul class="dropdown-menu" role="menu">
 	                <li><a href="#">Action</a></li>
@@ -62,15 +62,16 @@
 	            </li>
 	          </ul>
 	          <ul class="nav navbar-nav navbar-right">
-	            <li ui-sref-active="active"><a href="#" ui-sref="login"><i class="fa fa-power-off"></i> Login</a></li>
-	            <li ui-sref-active="active"><a href="#about" ui-sref="register">Register</a></li>
+	            <li ui-sref-active="active" ng-show="!requireLogin()"><a href="#" ui-sref="login"><i class="fa fa-power-off"></i> Login</a></li>
+	            <li ui-sref-active="active" ng-show="!requireLogin()"><a href="#" ui-sref="register">Register</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="logout">Logout</a></li>
 	          </ul>
 	        </div><!--/.nav-collapse -->
 	      </div>
 	    </nav>
 
 	    <!-- Begin page content -->
-	    <div class="container" id="main-container" ui-view>
+	    <div class="container slide" id="main-container" ui-view>
 	    	<div class="alert alert-success">Hello Darshan <a href="#" class="close" data-dismiss="alert">&times;</a></div>
 			<div class="page-header">
 				<h2>Sticky footer with fixed navbar 2 + 5 = @{{2+5}}</h2>
@@ -88,6 +89,7 @@
 	<script src="{{asset('/')}}assets/bower/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/blockUI/jquery.blockUI.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular/angular.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/angular-animate/angular-animate.min.js"></script>
 	{{--<script src="{{asset('/')}}assets/bower/angular-route/angular-route.min.js"></script>--}}
 	<script src="{{asset('/')}}assets/bower/angular-ui-router/release/angular-ui-router.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular-local-storage/dist/angular-local-storage.min.js"></script>
