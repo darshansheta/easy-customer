@@ -39,4 +39,11 @@ Route::group(array('prefix' => 'api'), function(){
 	Route::post('auth/register','AuthController@register');
 	Route::post('auth/login','AuthController@login');
 	Route::post('auth/logout','AuthController@logout');
+
+	Route::get('users/discounts','UsersController@discounts');
+});
+Route::group(array('prefix' => 'api', 'before' => 'auth.token'), function(){
+	
+	Route::get('users/discounts','UsersController@discounts');
+	
 });

@@ -86,13 +86,18 @@ class Authcontroller extends \BaseController {
 	public function register()
 	{
 		$response = array();
-		$only = Input::only('name', 'email', 'password');
+		$only = Input::only('name', 'email', 'password','address','city','state','pincode','phone');
 
 		if (User::validate($only) === true) {
 			$user = new User();
 
 			$user->name = $only['name'];
 			$user->email = $only['email'];
+			$user->address = $only['address'];
+			$user->city = strtolower($only['city']);
+			$user->state = strtolower($only['state']);
+			$user->pincode = $only['pincode'];
+			$user->phone = $only['phone'];
 			$user->password = Hash::make($only['password']);
 			$user->save();
 

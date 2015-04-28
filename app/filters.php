@@ -95,8 +95,8 @@ Route::filter('auth.token', function($route, $request)
     
 
     $login_token =  LoginToken::where('token',$token)->first();
-
-    if( !$login_token || !Auth::onceUsingId($login_token->user_id)) {
+    $isAuth = Auth::onceUsingId($login_token->user_id);
+    if( !$login_token || !$isAuth) {
 
         $response = Response::json([
             'success' => false,

@@ -1,1 +1,12 @@
-<h1>After Login</h1>
+<div class="row">
+	<div class="col-md-3" ng-repeat="UserDiscount in UserDiscounts">
+		<div class="panel panel-default" id="login-user-form-panel">
+			  <div class="panel-heading">
+					<h3 class="panel-title">{{UserDiscount.category.name}}</h3>
+			  </div>
+			  <div class="panel-body">
+			  	<h1>$ {{UserDiscount.total_discount}}</h1>
+			  </div>
+		</div>
+	</div>
+</div>

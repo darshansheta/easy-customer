@@ -2,7 +2,7 @@
 
 	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule','ngAnimate'])
 	.constant('AppConstant', {
-		apiRootPath:'http://localhost/easy-customer/public/api'
+		apiRootPath:'http://localhost/easy-customer/public/api/'
 	})
 	.config(['$httpProvider', function($httpProvider) {
 		//$httpProvider.defaults.useXDomain = true;
@@ -46,10 +46,11 @@
 		                    return config;
 		                },
 		                'responseError': function(response) {
-		                	SessionService.unset('authenticated');
-		                	SessionService.unset('token');
+		                	
 		                    console.log('status:'+response.status)
 		                    if(response.status === 401 || response.status === 403) {
+		                    	SessionService.unset('authenticated');
+		                    	SessionService.unset('token');
 		                        $location.path('/login');
 		                    }
 		                    setTimeout(function(){
@@ -71,7 +72,7 @@
 
 		var baseUrl = 'app/easyCustomerApp/views/';
 
-		$urlRouterProvider.otherwise('/home');
+		$urlRouterProvider.otherwise('/dashboard');
 
 		$stateProvider
 			.state('home',{
@@ -85,6 +86,14 @@
 				url:'/dashboard',
 				templateUrl:baseUrl+'dashboard.html',
 				controller: 'dashBoardController',
+				data: {
+				       requireLogin: true
+				     }
+			})
+			.state('products',{
+				url:'/products',
+				templateUrl:baseUrl+'products.html',
+				controller: 'productsController',
 				data: {
 				       requireLogin: true
 				     }
@@ -167,7 +176,11 @@
 			}
 		};
 	}]);
-	app.controller('dashBoardController',['$scope',function($scope){
+	app.controller('dashBoardController',['$scope','Discounts',function($scope,Discounts){
+		$scope.UserDiscounts = [];
+		Discounts.get().success(function(response){
+			$scope.UserDiscounts = response.discounts;
+		});
 
 	}]);
 	// Factory ====================================================================================
@@ -252,7 +265,7 @@
 				login: function(credentials) {
 					return $http({
 						method: 'POST',
-						url: apiRootPath+'/auth/login',
+						url: apiRootPath+'auth/login',
 						data: credentials
 					}).success(function(response){
 						SessionService.set('token',response.token)
@@ -277,5 +290,16 @@
 				}
 			};
 		}]);
+		
+		app.factory('Discounts', ['$http','Notification','AppConstant', function($http,Notification,AppConstant){
+				var apiRootPath = AppConstant.apiRootPath;
+				return {
+					get:function(){
+						return $http.get(apiRootPath+'users/discounts').success(function(response){
+							return response;
+						});
+					}
+				};
+			}]);
 
 }());

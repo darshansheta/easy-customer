@@ -46,7 +46,7 @@
 	        <div id="navbar" class="collapse navbar-collapse">
 	          <ul class="nav navbar-nav">
 	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="dashboard">Dashboard</a></li>
-	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#about">About</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="products">Products</a></li>
 	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#contact">Contact</a></li>
 	            <li class="dropdown"  ui-sref-active="open" ng-show="requireLogin()">
 	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>

@@ -17,6 +17,36 @@
 							<input type="email" required ng-model="newUser.email" name="email" class="form-control" id="" placeholder="Email" ng-maxlength="200">
 						</div>
 					</div>
+					<div class="form-group" ng-class="{'has-error' : registerUserForm.phone.$invalid && !registerUserForm.phone.$pristine }">
+						<label for="" class="col-sm-2 control-label">Phone</label>
+						<div class="col-sm-10">
+							<input type="text" maxlength="10" required ng-model="newUser.phone" name="phone" class="form-control" id="" placeholder="phone" ng-maxlength="10" ng-minlength="10">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : registerUserForm.address.$invalid && !registerUserForm.address.$pristine }">
+						<label for="" class="col-sm-2 control-label">Address</label>
+						<div class="col-sm-10">
+							<textarea  class="form-control" required ng-model="newUser.address" name="address"></textarea>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : registerUserForm.city.$invalid && !registerUserForm.city.$pristine }">
+						<label for="" class="col-sm-2 control-label">City</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newUser.city" name="city" class="form-control" id="" placeholder="City" ng-maxlength="200">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : registerUserForm.state.$invalid && !registerUserForm.state.$pristine }">
+						<label for="" class="col-sm-2 control-label">State</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newUser.state" name="state" class="form-control" id="" placeholder="State" ng-maxlength="200">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : registerUserForm.pincode.$invalid && !registerUserForm.pincode.$pristine }">
+						<label for="" class="col-sm-2 control-label">Pincode</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newUser.pincode" name="pincode" class="form-control" id="" placeholder="pincode" ng-maxlength="6"  ng-minlength="6" maxlength="6">
+						</div>
+					</div>
 					<div class="form-group" ng-class="{'has-error' : registerUserForm.password.$invalid && !registerUserForm.password.$pristine }">
 						<label for="" class="col-sm-2 control-label">Password</label>
 						<div class="col-sm-10">
