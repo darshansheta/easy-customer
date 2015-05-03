@@ -88,8 +88,13 @@
 	<script src="{{asset('/')}}assets/bower/jquery/dist/jquery.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/blockUI/jquery.blockUI.js"></script>
+	<script src="{{asset('/')}}assets/bower/underscore/underscore-min.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular/angular.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular-animate/angular-animate.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/ng-file-upload/ng-file-upload.min.js"></script>
+	<script src="{{asset('/')}}assets/bower/ng-file-upload/ng-file-upload-all.min.js"></script>
+	{{--<script src="{{asset('/')}}assets/bower/angular-bootstrap/ui-bootstrap.min.js"></script>}}
+	{{--<script src="{{asset('/')}}assets/bower/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>}}
 	{{--<script src="{{asset('/')}}assets/bower/angular-route/angular-route.min.js"></script>--}}
 	<script src="{{asset('/')}}assets/bower/angular-ui-router/release/angular-ui-router.min.js"></script>
 	<script src="{{asset('/')}}assets/bower/angular-local-storage/dist/angular-local-storage.min.js"></script>

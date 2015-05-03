@@ -1,6 +1,6 @@
 (function(){
 
-	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule','ngAnimate'])
+	var app = angular.module('easyCustomerApp',['ui.router','LocalStorageModule','ngAnimate','ngFileUpload'])
 	.constant('AppConstant', {
 		apiRootPath:'http://localhost/easy-customer/public/api/'
 	})
@@ -183,7 +183,105 @@
 		});
 
 	}]);
-	// Factory ====================================================================================
+	app.controller('productsController',['$scope','Categories','Products','Upload','AppConstant','Orders',function($scope,Categories,Products,Upload,AppConstant,Orders){
+		$scope.categories = [];
+		$scope.products = [];
+		$scope.productOptions = [];
+		$scope.category_id = "";
+		$scope.product_id = "";
+		$scope.order_type = "";
+		$scope.selectedProduct = {};
+		$scope.newCustomerDetail = {};
+		$scope.id_proof = {};
+		$scope.log = {};
+		
+		Categories.get().success(function(response){
+			$scope.categories = response.categories;
+			//set $scope.category_id when categories load
+			//$scope.category_id = $scope.categories[0].id;
+		});
+		Products.get().success(function(response){
+			$scope.products = response.products;
+			//set $scope.category_id when categories load
+			//$scope.category_id = $scope.categories[0].id;
+		});
+		/*$scope.$watch('id_proof', function () {
+		        $scope.uploadDocument('id_proof');
+		    });*/
+		$scope.loadProductOptions = function(){
+			if($scope.category_id){
+				$scope.productOptions = [];
+				$scope.product_id = "";
+				for(var index in $scope.products){
+					if($scope.products[index].category_id == $scope.category_id){
+						$scope.productOptions.push($scope.products[index]); 
+						
+					}
+				}
+				$scope.product_id = angular.copy($scope.productOptions[0].id);
+				$scope.displayProductForm();
+			}
+		};
+		$scope.displayProductForm = function(){
+			$scope.selectedProduct = _.findWhere($scope.products,{'id':$scope.product_id});
+		}
+
+		$scope.orderProductCat1 = function(isValid){
+			if(isValid){
+				if(!$scope.newCustomerDetail.id_proof || !$scope.newCustomerDetail.address_proof){
+					alert("Please upload document");
+					return false;
+				}
+				$('#order-product-cat1-form-panel').block();
+				$scope.newCustomerDetail.category_id = angular.copy($scope.category_id);
+				$scope.newCustomerDetail.product_id = angular.copy($scope.product_id);
+				$scope.newCustomerDetail.order_type = angular.copy($scope.order_type);
+				Orders.create($scope.newCustomerDetail).success(function(response){
+					$scope.orderProductCat1Form.$setPristine();
+					$scope.newCustomerDetail = {};
+					$scope.newCustomerDetail.gender = "male";
+					$scope.id_proof = {};
+					$scope.address_proof = {};
+					$("[ng-model='id_proof']").val("");
+					$("[ng-model='address_proof']").val("");
+					$('#order-product-cat1-form-panel').unblock();
+					$(document).scrollTop(0);
+				}).error(function(response){
+					$('#order-product-cat1-form-panel').unblock();
+					$(document).scrollTop(0);
+				});
+			}
+		}
+		$scope.uploadDocument = function(file,type){
+			type = (type == 'id_proof')? 'id_proof' : 'address_proof' ;
+			$('#order-product-cat1-form-panel').block();
+			Upload.upload({
+				url:AppConstant.apiRootPath+"upload-document",
+				fields:{'type':type},
+				file:file
+			 })/*.progress(function (evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                 $scope.log = 'progress: ' + progressPercentage + '% ' +
+                            evt.config.file.name + '\n' + $scope.log;
+             })*/.success(function (response, status, headers, config) {
+                //$scope.log = 'file ' + config.file.name + 'uploaded. Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                //$scope.$apply();
+                console.log(response);
+                if(response.type == "id_proof"){
+					$scope.newCustomerDetail.id_proof = response.id;
+                }if(response.type == "address_proof"){
+					$scope.newCustomerDetail.address_proof = response.id;
+                }
+                $('#order-product-cat1-form-panel').unblock();
+            }).error(function(response){
+            	console.log(response);
+            	$('#order-product-cat1-form-panel').unblock();
+            });
+             ;
+		}
+
+	}]);
+	// Factory =====================================================================================================================
 	app.factory('Notification', [function(){
 		return {
 			show:function(response){
@@ -292,14 +390,83 @@
 		}]);
 		
 		app.factory('Discounts', ['$http','Notification','AppConstant', function($http,Notification,AppConstant){
-				var apiRootPath = AppConstant.apiRootPath;
-				return {
-					get:function(){
-						return $http.get(apiRootPath+'users/discounts').success(function(response){
-							return response;
-						});
-					}
-				};
-			}]);
+			var apiRootPath = AppConstant.apiRootPath;
+			return {
+				get:function(){
+					return $http.get(apiRootPath+'users/discounts').success(function(response){
+						return response;
+					});
+				}
+			};
+		}]);
+		app.factory('Categories', ['$http','Notification','AppConstant', function($http,Notification,AppConstant){
+			var apiRootPath = AppConstant.apiRootPath;
+			return {
+				get:function(){
+					return $http.get(apiRootPath+'categories').success(function(response){
+						return response;
+					});
+				}
+			};
+		}]);
+		app.factory('Products', ['$http','Notification','AppConstant', function($http,Notification,AppConstant){
+			var apiRootPath = AppConstant.apiRootPath;
+			return {
+				get:function(){
+					return $http.get(apiRootPath+'products').success(function(response){
+						return response;
+					});
+				}
+			};
+		}]);
+		app.factory('Orders', ['$http','Notification','AppConstant', function($http,Notification,AppConstant){
+			var apiRootPath = AppConstant.apiRootPath;
+			return {
+				get:function(){
+					return $http.get(apiRootPath+'orders').success(function(response){
+						return response;
+					});
+				},
+				create:function(data){
+					return $http({
+						method: 'POST',
+						url: apiRootPath+'orders',
+						data: data
+					}).success(function(response){
+						Notification.show(response);
+						//console.log(response);
+					}).error(function(response){
+						Notification.show(response);
+						//console.log(response);
+					});
+				},
+			};
+		}]);
+
+		//Directive===========================================================================================================
+		var INTEGER_REGEXP = /^\-?\d+$/;
+		var DATE_REGEXP = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+		app.directive('validate.date', function() {
+		  return {
+		    require: 'ngModel',
+		    link: function(scope, elm, attrs, ctrl) {
+		      ctrl.$validators.integer = function(modelValue, viewValue) {
+		        if (ctrl.$isEmpty(modelValue)) {
+		          // consider empty models to be valid
+		          return true;
+		        }
+
+		        if (DATE_REGEXP.test(viewValue)) {
+		          // it is valid
+		          return true;
+		        }
+
+		        // it is invalid
+		        return false;
+		      };
+		    }
+		  };
+		});
+
 
 }());

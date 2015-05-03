@@ -42,8 +42,34 @@ Route::group(array('prefix' => 'api'), function(){
 
 	Route::get('users/discounts','UsersController@discounts');
 });
+
 Route::group(array('prefix' => 'api', 'before' => 'auth.token'), function(){
 	
 	Route::get('users/discounts','UsersController@discounts');
+	Route::post('/orders','OrdersController@create');
+
+	Route::get('categories',function(){
+		$response = array();
+		$categories = Category::get()->toArray();
+
+		$response['success'] = true;
+		$response['categories'] = $categories;
+		$response['user'] = Auth::user();
+		//$response['message'] = "Logged In sucessfully.";
+		return $response;
+	});
+
+	Route::get('products',function(){
+		$response = array();
+		$products = Product::get()->toArray();
+
+		$response['success'] = true;
+		$response['products'] = $products;
+		$response['user'] = Auth::user();
+		//$response['message'] = "Logged In sucessfully.";
+		return $response;
+	});
+	
+	Route::post('/upload-document','CustomersController@uploaddocument');
 	
 });

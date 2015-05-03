@@ -1,0 +1,169 @@
+<div class="panel panel-default">
+	<div class="panel-body">
+		<form name="" id="" ng-submit="" class="form-horizontal" role="form" novalidate>
+				<div class="form-group" ng-class="">
+					<label for="" class="col-sm-2 control-label">Categories</label>
+					<div class="col-sm-10">
+						<select name="category" ng-change="loadProductOptions()" ng-model="category_id" ng-options="cat.id as cat.name for cat in categories" id="input" class="form-control" required="required">
+						<option value="">-- Select Category --</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ng-class="">
+					<label for="" class="col-sm-2 control-label">Products</label>
+					<div class="col-sm-10">
+						<select name="product" ng-model="product_id" id="" ng-change="displayProductForm();" class="form-control" required="required" ng-options="product.id as product.name for product in productOptions">
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ng-class="">
+					<label for="" class="col-sm-2 control-label">Order Delivery Type</label>
+					<div class="col-sm-10">
+						<div class="radio">
+							  <label>
+							    <input type="radio" name="order_type" id="" ng-init="order_type = 'normal';" ng-model="order_type" value="normal" checked>
+							    Normal
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+							    <input type="radio" name="order_type" id="" ng-model="order_type" value="urgent">
+							    Urgent
+							  </label>
+							</div>
+					</div>
+				</div>
+				
+		</form>
+	</div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------- -->
+<div class="panel panel-default" id="order-product-cat1-form-panel" ng-show="selectedProduct.category_id == 1">
+	  <div class="panel-heading">
+			<h3 class="panel-title">{{selectedProduct.name}}</h3>
+	  </div>
+	  <div class="panel-body">
+	  		<h3>Fill Applicant Details</h3>
+			<form name="orderProductCat1Form" id="order-product-cat1-form" ng-submit="orderProductCat1(orderProductCat1Form.$valid)" class="form-horizontal" role="form" novalidate>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.name.$invalid && !orderProductCat1Form.name.$pristine }">
+						<label for="" class="col-sm-2 control-label">Name</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newCustomerDetail.name" name="name" class="form-control" id="" placeholder="Name" ng-maxlength="100">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.email.$invalid && !orderProductCat1Form.email.$pristine }">
+						<label for="" class="col-sm-2 control-label">Email</label>
+						<div class="col-sm-10">
+							<input type="email" required ng-model="newCustomerDetail.email" name="email" class="form-control" id="" placeholder="Email" ng-maxlength="200">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.phone.$invalid && !orderProductCat1Form.phone.$pristine }">
+						<label for="" class="col-sm-2 control-label">Phone</label>
+						<div class="col-sm-10">
+							<input type="num" maxlength="10" required ng-model="newCustomerDetail.phone" name="phone" class="form-control" id="" placeholder="phone" ng-maxlength="10" ng-minlength="10">
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.dob.$invalid && !orderProductCat1Form.dob.$pristine }">
+						<label for="" class="col-sm-2 control-label">Date Of Birth</label>
+						<div class="col-sm-10">
+							<input type="text" validate.date maxlength="10" required ng-model="newCustomerDetail.dob" name="dob" class="form-control" id="" placeholder="dd/MM/yyyy" ng-maxlength="10" ng-minlength="10">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.gender.$invalid && !orderProductCat1Form.gender.$pristine }">
+						<label for="" class="col-sm-2 control-label">Gender</label>
+						<div class="col-sm-10">
+							<div class="radio">
+							  <label>
+							    <input type="radio" name="gender" id="" ng-init="newCustomerDetail.gender = 'male';" ng-model="newCustomerDetail.gender" value="male" checked>
+							    Male
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+							    <input type="radio" name="gender" id="" ng-model="newCustomerDetail.gender" value="female">
+							    Female
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.address.$invalid && !orderProductCat1Form.address.$pristine }">
+						<label for="" class="col-sm-2 control-label">Address with Landmark</label>
+						<div class="col-sm-10">
+							<textarea  class="form-control" required ng-model="newCustomerDetail.address" name="address"></textarea>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.city.$invalid && !orderProductCat1Form.city.$pristine }">
+						<label for="" class="col-sm-2 control-label">City</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newCustomerDetail.city" name="city" class="form-control" id="" placeholder="City" ng-maxlength="200">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.state.$invalid && !orderProductCat1Form.state.$pristine }">
+						<label for="" class="col-sm-2 control-label">State</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newCustomerDetail.state" name="state" class="form-control" id="" placeholder="State" ng-maxlength="200">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.pincode.$invalid && !orderProductCat1Form.pincode.$pristine }">
+						<label for="" class="col-sm-2 control-label">Pincode</label>
+						<div class="col-sm-10">
+							<input type="text" required ng-model="newCustomerDetail.pincode" name="pincode" class="form-control" id="" placeholder="pincode" ng-maxlength="6"  ng-minlength="6" maxlength="6">
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.id_proof.$invalid && !orderProductCat1Form.id_proof.$pristine }">
+						<label for="" class="col-sm-2 control-label">ID proof</label>
+						<div class="col-sm-10">
+							<input type="file" ngf-select ngf-change="uploadDocument(id_proof,'id_proof')" ng-model="id_proof" name="id_proof" id="id_proof">
+							<p class="help-block"></p>
+						</div>
+					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.address_proof.$invalid && !orderProductCat1Form.address_proof.$pristine }">
+						<label for="" class="col-sm-2 control-label">Address proof</label>
+						<div class="col-sm-10">
+							<input type="file" ngf-select ngf-change="uploadDocument(address_proof,'address_proof')" ng-model="address_proof" name="address_proof" id="address_proof">
+							    <p class="help-block"></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-10 col-sm-offset-2">
+							<button type="submit" ng-disabled="orderProductCat1Form.$invalid" class="btn btn-primary">Submit</button>
+						</div>
+					</div>
+			</form>
+	  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------- -->
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 2">
+	  <div class="panel-heading">
+			<h3 class="panel-title">{{selectedProduct.name}}</h3>
+	  </div>
+	  <div class="panel-body">
+			2Panel content
+	  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------- -->
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 3">
+	  <div class="panel-heading">
+			<h3 class="panel-title">{{selectedProduct.name}}</h3>
+	  </div>
+	  <div class="panel-body">
+			3Panel content
+	  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------- -->
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 4">
+	  <div class="panel-heading">
+			<h3 class="panel-title">{{selectedProduct.name}}</h3>
+	  </div>
+	  <div class="panel-body">
+			4Panel content
+	  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------- -->
+<pre>
+	{{productOptions}}
+</pre>
+{{product_id}}-
+{{category_id}}
+{{orderProductCat1Form.name}}
