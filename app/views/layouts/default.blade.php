@@ -47,7 +47,9 @@
 	          <ul class="nav navbar-nav">
 	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="dashboard">Dashboard</a></li>
 	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="products">Products</a></li>
-	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#contact">Contact</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#contact">Orders</a></li>
+	            <li ui-sref-active="active" ng-show="requireLogin()"><a href="#" ui-sref="payments">Payment</a></li>
+	            {{-- <li ui-sref-active="active" ng-show="requireLogin()"><a href="#contact">Contact</a></li> --}}
 	            <li class="dropdown"  ui-sref-active="open" ng-show="requireLogin()">
 	              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
 	              <ul class="dropdown-menu" role="menu">
@@ -71,7 +73,7 @@
 	    </nav>
 
 	    <!-- Begin page content -->
-	    <div class="container slide" id="main-container" ui-view>
+	    <div class="container " id="main-container" ui-view>
 	    	<div class="alert alert-success">Hello Darshan <a href="#" class="close" data-dismiss="alert">&times;</a></div>
 			<div class="page-header">
 				<h2>Sticky footer with fixed navbar 2 + 5 = @{{2+5}}</h2>

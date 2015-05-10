@@ -91,6 +91,8 @@ class Authcontroller extends \BaseController {
 		if (User::validate($only) === true) {
 			$user = new User();
 
+			$verification_code = base64_encode($only['email']."YmdHis");
+
 			$user->name = $only['name'];
 			$user->email = $only['email'];
 			$user->address = $only['address'];
@@ -99,10 +101,13 @@ class Authcontroller extends \BaseController {
 			$user->pincode = $only['pincode'];
 			$user->phone = $only['phone'];
 			$user->password = Hash::make($only['password']);
+			$user->verification_code = $verification_code;
 			$user->save();
-
+			Mail::send('emails.verify', array("verification_code"=>$verification_code), function($message) use ($only) {
+			    $message->to($only['email'], $only['name'])->subject('CrestDeal Email Verification ');
+			});
 			$response['success'] = true;
-			$response['message'] = "Registered sucessfully.";
+			$response['message'] = "Registered sucessfully. We have sent you email for verifcation process. Please verify email address by clicking on link in email.";
 			return $response;
 		} else {
 			$v = User::validate($only);
@@ -117,7 +122,24 @@ class Authcontroller extends \BaseController {
 		$response = array();
 		$only = Input::only('email','password');
 
-		if (Auth::attempt(array('email' => $only['email'], 'password' => $only['password'])))
+		$user = User::where('email',$only['email'])->first();
+		if(empty($user)){
+			$response['success'] = false;
+			$response['error'] = 'Invalid Email.';
+			return Response::json($response,self::$errorStatusCode);
+		}
+		if(!$user->verfied){
+			$response['success'] = false;
+			$response['error'] = 'Verfiy email address.';
+			return Response::json($response,self::$errorStatusCode);
+		}
+		if(!$user->active){
+			$response['success'] = false;
+			$response['error'] = 'Account is disabled';
+			return Response::json($response,self::$errorStatusCode);
+		}
+
+		if (Auth::attempt(array('email' => $only['email'], 'password' => $only['password'],'active' => 1,'verfied' => 1)))
 		{
 		    $token = md5(Auth::id().Auth::user()->email.Agent::platform().Agent::browser());
 		    $login_token = LoginToken::where('user_id',Auth::id())->where('token',$token)->first();

@@ -41,7 +41,7 @@ class OrdersController extends \BaseController {
 			$order = array();
 			if($category_id == 1){
 
-				$only = Input::only('name', 'email','address','city','state','pincode','phone','dob','gender');
+				$only = Input::only('name', 'email','address','city','state','pincode','phone','dob','gender','pan');
 				if (Customer::validate($only) === true) {
 					$customer_id = (Input::has('customer_id')) ? Input::get('customer_id') : 0;
 					if(!$customer_id){
@@ -52,7 +52,7 @@ class OrdersController extends \BaseController {
 							$response['error'] = "Document not found";
 							return Response::json($response,self::$errorStatusCode);
 						}
-						$customer =  new Customer();
+						$customer = new Customer();
 						$customer->user_id = Auth::id();
 						$customer->name = $only['name'];
 						$customer->email = $only['email'];
@@ -63,6 +63,7 @@ class OrdersController extends \BaseController {
 						$customer->pincode = $only['pincode'];
 						$customer->gender = $only['gender'];
 						$customer->phone = $only['phone'];
+						$customer->pan = $only['pan'];
 
 						$customer->save();
 
@@ -96,12 +97,148 @@ class OrdersController extends \BaseController {
 						$order->total_amount = $product->urgent_amount;
 					}
 					$order->save();
-					$response['success'] = true;
-					$response['message'] = "Order placed sucessfully";
+					//do mail and smsm
+					//file post requst to url
+					//create pdf
 
 				}elseif ($category_id == 2) {
-					# code...
-				} 
+					if(Input::has('coi') && Input::has('subscriber_page')){
+
+					}else{
+						$response['success'] = false;
+						$response['error'] = "Document not found";
+						return Response::json($response,self::$errorStatusCode);
+					}
+
+					$order = new Order();
+					$order->user_id = Auth::id();
+					$order->category_id = $category_id;
+					$order->product_id = $product_id;
+					if($order_type == "normal"){
+						$order->product_amount = $product->normal_amount;
+						$order->total_amount = $product->normal_amount;
+					}else{
+						$order->product_amount = $product->urgent_amount;
+						$order->total_amount = $product->urgent_amount;
+					}
+					$order->save();
+
+					$id_proof_doc = OrderDocument::find(Input::get('coi'));
+					$id_proof_doc->order_id = $order->id ;
+					$id_proof_doc->save();
+
+					$address_proof_doc = OrderDocument::find(Input::get('subscriber_page'));
+					$address_proof_doc->order_id = $order->id ;
+					$address_proof_doc->save();
+
+				}elseif ($category_id == 3) {
+					if(Input::has('coi')){
+
+					}else{
+						$response['success'] = false;
+						$response['error'] = "Document not found";
+						return Response::json($response,self::$errorStatusCode);
+					}
+
+					$order = new Order();
+					$order->user_id = Auth::id();
+					$order->category_id = $category_id;
+					$order->product_id = $product_id;
+					if($order_type == "normal"){
+						$order->product_amount = $product->normal_amount;
+						$order->total_amount = $product->normal_amount;
+					}else{
+						$order->product_amount = $product->urgent_amount;
+						$order->total_amount = $product->urgent_amount;
+					}
+					$order->save();
+
+					$id_proof_doc = OrderDocument::find(Input::get('coi'));
+					$id_proof_doc->order_id = $order->id ;
+					$id_proof_doc->save();
+
+
+				}elseif ($category_id == 4) {
+					if(Input::has('coi')){
+
+					}else{
+						$response['success'] = false;
+						$response['error'] = "Document not found";
+						return Response::json($response,self::$errorStatusCode);
+					}
+
+					$order = new Order();
+					$order->user_id = Auth::id();
+					$order->category_id = $category_id;
+					$order->product_id = $product_id;
+					if($order_type == "normal"){
+						$order->product_amount = $product->normal_amount;
+						$order->total_amount = $product->normal_amount;
+					}else{
+						$order->product_amount = $product->urgent_amount;
+						$order->total_amount = $product->urgent_amount;
+					}
+					$order->save();
+
+					$id_proof_doc = OrderDocument::find(Input::get('coi'));
+					$id_proof_doc->order_id = $order->id ;
+					$id_proof_doc->save();
+
+
+				}
+
+
+				//-------------------------------------------------------------------
+				$ot = new OrderTree();
+				$order_tree_id = $ot->addToTree($order->id,$product_id,$category_id);
+				// $order_tree = OrderTree::find($order_tree_id);
+
+				$ud = new UserDiscount();
+				$ud->updateDiscount($order_tree_id,$category);
+
+				//invoice to user----------------------------------
+				$order_id = $order->id;
+				$pdf = PDF::loadView('pdfs.invoice', array("order"=>$order));
+				$invoice_file_name = "INVOICE-".date("YmdHis")."-".$order_id;
+				$pdf->save('pdf/invoices/'.$invoice_file_name.'.pdf');
+
+				$order->invoice_file_name = $invoice_file_name.".pdf";
+
+				$order->save();
+
+				Mail::send('emails.order_confirmation', array("order"=>$order), function($message)  use ($product,$invoice_file_name){
+				    $message->to(Auth::user()->email, Auth::user()->name)->subject('Order Confirmation & Invoice - '.$product->name);
+				    $message->attach("pdf/invoices/".$invoice_file_name.".pdf");
+				});
+
+				//update to delivery department----------------------------------
+				$deliver = Deliver::where('pincode',Auth::user()->pincode)->first();
+				if(empty($deliver)){
+					$pincode_email = Setting::where('key','deliver_default_email')->first()->value;
+				}else{
+					$pincode_email = $deliver->email;
+				}
+
+				Mail::send('emails.deliver', array("order"=>$order), function($message)  use ($product,$pincode_email) {
+				    $message->to($pincode_email, "Staff")->subject('New order placed for - '.$product->name);
+				});
+				
+				//update to production department----------------------------------
+				$production_email = $product->email;
+
+				Mail::send('emails.create_new_product', array("order"=>$order), function($message) use ($product,$production_email)  {
+				    $message->to($production_email, "Production Staff")->subject('Be ready with - '.$product->name);
+				});
+
+
+				$response['success'] = false;
+				$response['product'] = $product->email;
+				$response['order_id'] = $order->id;
+				$response['order_tree_id'] = $order_tree_id;
+				$response['user'] = Auth::user()->toArray();
+				$response['message'] = "Order placed sucessfully";
+				return Response::json($response,self::$errorStatusCode);
+				 
 		}else{
 			$response['success'] = false;
 			$response['error'] = "Parameter missing !!";
@@ -174,6 +311,50 @@ class OrdersController extends \BaseController {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function uploaddocument(){
+		$response = array();
+		if(Input::has('type') && Input::hasFile('file')){
+			$type = Input::get('type');
+			if(in_array($type,array('coi','subscriber_page','inc7'))){
+				$extension = strtolower(Input::file('file')->getClientOriginalExtension());
+				if(!in_array($extension, array('jpg','jpeg','png','pdf','doc','docx'))){
+					$response['success'] = false;
+					$response['message'] = 'Invalid file type';
+					return Response::json($response,self::$errorStatusCode);
+				}
+				$user = User::find(Auth::id());
+				$file = Input::file('file'); 
+				$uploadDir = 'uploads/orders/';
+				$destinationPath = public_path()."/".$uploadDir;
+				$fileName = date('YmdHis')."_".rand(11111,99999).'.'.$extension;//Input::file('file')->getClientOriginalName();//
+				Input::file('file')->move($destinationPath, $fileName);
+
+				$order_document = new OrderDocument();
+				$order_document->user_id = Auth::id();
+				$order_document->type = $type;
+				$order_document->file_name = $fileName;
+				$order_document->save();
+
+				$response['success'] = true;
+				$response['type'] = $type;
+				$response['id'] = $order_document->id;
+				$response['message'] = "Document uploaded successfully";
+
+				return $response;
+
+			}else{
+				$response['success'] = false;
+				$response['error'] = "invalid doc type";
+				return Response::json($response,self::$errorStatusCode);
+			}
+		}else{
+			$response['success'] = false;
+			$response['error'] = "params missing";
+			return Response::json($response,self::$errorStatusCode);
+		}
+		return $response;
 	}
 
 }

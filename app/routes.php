@@ -13,9 +13,27 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+	//$order = Order::with('product','user','category')->find(1);
+	/*$pdf = PDF::loadView('emails.invoice', array("order"=>$order));
+	$pdf->save('pdf/invoices/123abc.pdf');
+	exit;*/
+	/*Mail::send('email_templates.invoice', array("order"=>$order), function($message) {
+	    $message->to('darshan.denz@gmail.com', 'Darshan Sheta')->subject('Welcome to the Laravel 4 Auth App!');
+	    $message->attach("pdf/invoices/123abc.pdf");
+	});*/
+	return View::make('frontend');
 });
-
+//verification_code
+Route::get('users/verify/{verification_code}',function($verification_code){
+	//return $verification_code
+	$user = User::where('verification_code',$verification_code)->first();
+	if(empty($user)){
+		return "Something missing";
+	}
+	$user->verfied = 1;
+	$user->save();
+	return "Your email address is verfied";
+});
 Route::get('/detect', function()
 {
 	echo "<pre>";
@@ -71,5 +89,6 @@ Route::group(array('prefix' => 'api', 'before' => 'auth.token'), function(){
 	});
 	
 	Route::post('/upload-document','CustomersController@uploaddocument');
+	Route::post('/upload-order-document','OrdersController@uploaddocument');
 	
 });

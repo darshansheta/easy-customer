@@ -1,0 +1,78 @@
+<div class="panel panel-default" id="submit-payment-form-panel">
+	  <div class="panel-heading">
+			<h3 class="panel-title">{{selectedProduct.name}}</h3>
+	  </div>
+	  <div class="panel-body">
+			<form name="submitPaymentForm" id="submit-payment-form" ng-submit="submitPayment(submitPaymentForm.$valid)" class="form-horizontal" role="form" novalidate>
+				<div class="form-group"  ng-class="{'has-error' : submitPaymentForm.category_id.$invalid && !submitPaymentForm.category_id.$pristine }">
+					<label for="" class="col-sm-2 control-label">Categories</label>
+					<div class="col-sm-10">
+						<select name="category"  ng-change="displayCategoryDiscount();" ng-model="newPayment.category_id" ng-options="cat.id as cat.name for cat in categories" id="input" class="form-control" required="required">
+						<option value="">-- Select Category --</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ng-show="newPayment.category_id">
+					<label for="" class="col-sm-2 control-label">Discount Applied</label>
+					<div class="col-sm-10">
+						<!-- <select name="category" ng-change=""  ng-model="newPayment.category_id" ng-options="cat.id as cat.name for cat in categories" id="input" class="form-control" required="required">
+						<option value="">-- Select Category --</option>
+						</select> -->
+						<span class="form-control">{{newPayment.discount}}</span>
+					</div>
+				</div>
+				<div class="form-group" ng-show="newPayment.category_id" ng-class="{'has-error' : submitPaymentForm.amount.$invalid && !submitPaymentForm.amount.$pristine }">
+					<label for="" class="col-sm-2 control-label">Amount</label>
+					<div class="col-sm-10">
+						<input type="number" min="0" name="amount" id="amount" ng-model="newPayment.amount" class="form-control" required="required" title="">
+					</div>
+				</div>
+				<div class="form-group" ng-class="{'has-error' : submitPaymentForm.type.$invalid && !submitPaymentForm.type.$pristine }">
+					<label for="" class="col-sm-2 control-label">Payment Type</label>
+					<div class="col-sm-10">
+						<select name="type"   ng-model="newPayment.type" ng-options="type.id as type.name for type in paymentTypes" id="" class="form-control" ng-init="newPayment.type = 'cash';" required="required">
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ng-show="(newPayment.type=='cash')" ng-class="{'has-error' : submitPaymentForm.receipt_number.$invalid && !submitPaymentForm.receipt_number.$pristine }">
+					<label for="" class="col-sm-2 control-label">Receipt Number</label>
+					<div class="col-sm-10">
+						<input name="receipt_number" type="text"  ng-model="newPayment.receipt_number" id="receipt_number" class="form-control" >
+					</div>
+				</div>
+				<div class="form-group" ng-show="(newPayment.type=='cheque')" ng-class="{'has-error' : submitPaymentForm.cheque_number.$invalid && !submitPaymentForm.cheque_number.$pristine }">
+					<label for="" class="col-sm-2 control-label">Cheque Number</label>
+					<div class="col-sm-10">
+						<input name="cheque_number" type="text"  ng-model="newPayment.cheque_number" id="cheque_number" class="form-control" >
+					</div>
+				</div>
+				<div class="form-group" ng-show="(newPayment.type=='netbanking')" ng-class="{'has-error' : submitPaymentForm.reference_number.$invalid && !submitPaymentForm.reference_number.$pristine }">
+					<label for="" class="col-sm-2 control-label">Reference Number</label>
+					<div class="col-sm-10">
+						<input name="reference_number" type="text"  ng-model="newPayment.reference_number" id="reference_number" class="form-control" >
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<button type="submit" ng-disabled="submitPaymentForm.$invalid" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+		</form>
+	  </div>
+</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{{newPayment}}

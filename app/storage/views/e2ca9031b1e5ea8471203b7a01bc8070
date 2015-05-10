@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>New Order Placed </title>
+</head>
+<body>
+<h3>Hello ,</h3>
+<p>
+Need to deliver packet.<br><br>
+product: <?php echo $order->product->name; ?>
+
+<br>
+<p>
+
+Address : <?php echo $order->user->address; ?>,<br>
+City : <?php echo $order->user->city; ?>,<br>
+State : <?php echo $order->user->state; ?>,<br>
+Pincode : <?php echo $order->user->pincode; ?>,<br>
+phone : <?php echo $order->user->phone; ?>,<br>
+</p>
+<br>
+Thank you,<br>
+CrestDeal System
+
+</body>
+</html>

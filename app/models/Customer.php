@@ -13,6 +13,7 @@ class Customer extends \Eloquent {
 				"phone"	=> arraY('required','regex:[^\d{10}$]'),
 				"dob"	=> "required",
 				"gender"	=> "required",
+				"pan"	=> "required",
 				);
 
 	public static function validate($input)
@@ -23,5 +24,13 @@ class Customer extends \Eloquent {
 		: true;
 
 	
+	}
+
+	public function getLastParent(){
+		return DB::table('orders')->max('id');
+	}
+
+	public function getParent($id){
+ 		return 1;
 	}
 }

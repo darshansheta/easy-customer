@@ -63,6 +63,12 @@
 							<input type="num" maxlength="10" required ng-model="newCustomerDetail.phone" name="phone" class="form-control" id="" placeholder="phone" ng-maxlength="10" ng-minlength="10">
 						</div>
 					</div>
+					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.pan.$invalid && !orderProductCat1Form.pan.$pristine }">
+						<label for="" class="col-sm-2 control-label">PAN</label>
+						<div class="col-sm-10">
+							<input type="text"  required ng-model="newCustomerDetail.pan" name="pan" class="form-control" id="pan" placeholder="pan" ">
+						</div>
+					</div>
 
 					<div class="form-group" ng-class="{'has-error' : orderProductCat1Form.dob.$invalid && !orderProductCat1Form.dob.$pristine }">
 						<label for="" class="col-sm-2 control-label">Date Of Birth</label>
@@ -134,36 +140,101 @@
 	  </div>
 </div>
 <!-- -------------------------------------------------------------------------------------------------------- -->
-<div class="panel panel-default" ng-show="selectedProduct.category_id == 2">
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 2" id="order-product-cat2-form-panel">
 	  <div class="panel-heading">
 			<h3 class="panel-title">{{selectedProduct.name}}</h3>
 	  </div>
 	  <div class="panel-body">
-			2Panel content
+			<form name="orderProductCat2Form" id="order-product-cat2-form" ng-submit="orderProductCat2(orderProductCat2Form.$valid)" class="form-horizontal" role="form" novalidate>
+				<div class="form-group" ng-class="{'has-error' : orderProductCat2Form.subscriber_page.$invalid && !orderProductCat2Form.subscriber_page.$pristine }">
+					<label for="" class="col-sm-2 control-label">MOA & AOA with subscriber page</label>
+					<div class="col-sm-10">
+						<input type="file" ngf-select ngf-change="uploadOrderDocument(subscriber_page,'subscriber_page',2)" ng-model="subscriber_page" name="subscriber_page" id="subscriber_page">
+						<p class="help-block"></p>
+					</div>
+				</div>
+				<div class="form-group" ng-class="{'has-error' : orderProductCat2Form.cat2_coi.$invalid && !orderProductCat2Form.cat2_coi.$pristine }">
+					<label for="" class="col-sm-2 control-label">Incorporation Certificate (COI)</label>
+					<div class="col-sm-10">
+						<input type="file" ngf-select ngf-change="uploadOrderDocument(cat2_coi,'coi',2)" ng-model="cat2_coi" name="cat2_coi" id="cat2_coi">
+						    <p class="help-block"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<button type="submit" ng-disabled="orderProductCat2Form.$invalid" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+		</form>
 	  </div>
 </div>
 <!-- -------------------------------------------------------------------------------------------------------- -->
-<div class="panel panel-default" ng-show="selectedProduct.category_id == 3">
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 3" id="order-product-cat3-form-panel">
 	  <div class="panel-heading">
 			<h3 class="panel-title">{{selectedProduct.name}}</h3>
 	  </div>
 	  <div class="panel-body">
-			3Panel content
+			<form name="orderProductCat3Form" id="order-product-cat3-form" ng-submit="orderProductCat3(orderProductCat3Form.$valid)" class="form-horizontal" role="form" novalidate>
+				<div class="form-group" ng-class="{'has-error' : orderProductCat3Form.cat3_coi.$invalid && !orderProductCat3Form.cat3_coi.$pristine }">
+					<label for="" class="col-sm-2 control-label">Incorporation Certificate (COI)</label>
+					<div class="col-sm-10">
+						<input type="file" ngf-select ngf-change="uploadOrderDocument(cat3_coi,'coi',3)" ng-model="cat3_coi" name="cat3_coi" id="cat3_coi">
+						    <p class="help-block"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<button type="submit" ng-disabled="orderProductCat3Form.$invalid" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+		</form>
 	  </div>
 </div>
 <!-- -------------------------------------------------------------------------------------------------------- -->
-<div class="panel panel-default" ng-show="selectedProduct.category_id == 4">
+<div class="panel panel-default" ng-show="selectedProduct.category_id == 4" id="order-product-cat4-form-panel">
 	  <div class="panel-heading">
 			<h3 class="panel-title">{{selectedProduct.name}}</h3>
 	  </div>
 	  <div class="panel-body">
-			4Panel content
+			<form name="orderProductCat4Form" id="order-product-cat4-form" ng-submit="orderProductCat4(orderProductCat4Form.$valid)" class="form-horizontal" role="form" novalidate>
+				<div class="form-group" ng-class="{'has-error' : orderProductCat4Form.cat4_coi.$invalid && !orderProductCat4Form.cat4_coi.$pristine }">
+					<label for="" class="col-sm-2 control-label">Incorporation Certificate (COI)</label>
+					<div class="col-sm-10">
+						<input type="file" ngf-select ngf-change="uploadOrderDocument(cat4_coi,'coi',4)" ng-model="cat4_coi" name="cat4_coi" id="cat4_coi">
+						    <p class="help-block"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<button type="submit" ng-disabled="orderProductCat4Form.$invalid" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+		</form>
 	  </div>
 </div>
 <!-- -------------------------------------------------------------------------------------------------------- -->
-<pre>
+<!-- <pre>
 	{{productOptions}}
 </pre>
 {{product_id}}-
 {{category_id}}
 {{orderProductCat1Form.name}}
+ -->
+
+<div class="modal fade" id="order-detail-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Modal title</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -6,7 +6,9 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"way/generators": "~2.0",
-		"jenssegers/agent": "~2.1"
+		"jenssegers/agent": "~2.1",
+		"guzzlehttp/guzzle": "~4.0",
+		"barryvdh/laravel-dompdf": "0.4.*"
 	},
 	"autoload": {
 		"classmap": [

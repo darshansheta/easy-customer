@@ -102,7 +102,7 @@ class CustomersController extends \BaseController {
 				$fileName = date('YmdHis')."_".rand(11111,99999).'.'.$extension;//Input::file('file')->getClientOriginalName();//
 				Input::file('file')->move($destinationPath, $fileName);
 
-				$customer_document = new CUstomerDocument();
+				$customer_document = new CustomerDocument();
 				$customer_document->user_id = Auth::id();
 				$customer_document->type = $type;
 				$customer_document->file_name = $fileName;

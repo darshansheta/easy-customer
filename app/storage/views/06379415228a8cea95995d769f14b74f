@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Order Confirmation</title>
+</head>
+<body>
+<h3>Hello <?php echo $order->user->name; ?>,</h3>
+<p>
+Your order for <b><?php echo $order->product->name; ?></b> has been placed <br>
+find attached invoice for <b><?php echo $order->product->name; ?></b> order.<br>
+Order Date: <?php echo date("d,M Y H:i",strtotime($order->created_at)); ?><br>
+<p>
+<br>
+Thank you,<br>
+CrestDeal System
+
+</body>
+</html>
