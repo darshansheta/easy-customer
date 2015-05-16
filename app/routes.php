@@ -23,6 +23,45 @@ Route::get('/', function()
 	});*/
 	return View::make('frontend');
 });
+
+Route::get('/dsc', function()
+{
+	/*$client = new \GuzzleHttp\Client();
+	//$client->setDefaultOption('verify', 'C:\Program Files (x86)\Git\bin\curl-ca-bundle.crt');
+	$client->setDefaultOption('verify', false);
+	$otldata = '{"osdetails":"OS = Windows 7/Windows Server 2008; OS Platform = 64 Bit; Browser = Chrome 42.0.2311.135; Browser Platform = 32 Bit;","policyname":"SafeScrypt subCA for RCAI Class 2 2014","classname":"RCAI Class 2 Individual 1 Year Signing 2014","regno":"","challengephrase":"cXdlcjEyMzQh","PANNumber":"2342423423","Comments":"","keytype":1,"dndetails":{"2.5.4.3":"Darshan Sheta","2.5.4.5":"aa35abea670358d869c8e355191a7c67f14303865d3eaef5bfdf0a7a3e19af50","2.5.4.8":"Maharashtra","2.5.4.17":"395004","2.5.4.10":"Personal","2.5.4.6":"IN"}}';
+//echo "<pre>";
+$otldata_arr = json_decode($otldata,true);
+
+	//$client = new \Guzzle\Service\Client();
+	$response = $client->post('https://dsc.safescrypt.com/DevIT/7010.html', [
+	    'body' => [
+	        'otldata' => $otldata_arr,
+	        'sanvalue' => 'das@mailinator.com',
+	        'csrtype' => '2',
+	        'csrfile' => '',
+	        'E-Mail id' => 'das@mailinator.com',
+	    ]
+	]);
+	echo $response->getHeaders();
+	echo $response->getBody();
+	//=======================
+	$request = $client->createRequest('POST', 'http://httpbin.org/post');
+	$postBody = $request->getBody();
+
+	// $postBody is an instance of GuzzleHttp\Post\PostBodyInterface
+	$postBody->setField('foo', 'bar');
+	echo $postBody->getField('foo');
+	// 'bar'
+
+	echo json_encode($postBody->getFields());
+	// {"foo": "bar"}
+
+	// Send the POST request
+	$response = $client->send($request);
+	//=======================
+	//return View::make('frontend');*/
+});
 //verification_code
 Route::get('users/verify/{verification_code}',function($verification_code){
 	//return $verification_code
@@ -90,5 +129,35 @@ Route::group(array('prefix' => 'api', 'before' => 'auth.token'), function(){
 	
 	Route::post('/upload-document','CustomersController@uploaddocument');
 	Route::post('/upload-order-document','OrdersController@uploaddocument');
+	
+});
+
+Route::get("/admin/login",function(){
+	if(Auth::check()){
+		return Redirect::to('/admin/dashboard');
+	}
+	return View::make("admin.auth.login");
+});
+Route::post("/admin/dologin",function(){
+	$response = array();
+	$only = Input::only('email','password');
+	if (Auth::attempt(array('email' => $only['email'], 'password' => $only['password'],'id'=>1),true))
+	{
+	    return Redirect::to('admin/dashboard');
+	}else{
+		Session::flash('alert', array("type"=>"success","message"=>"Hello"));
+		return Redirect::to('/admin/login');
+	}
+});
+
+Route::group(array('prefix' => 'admin', 'before' => 'auth.admin'), function(){
+	
+	Route::get("/",'OrdersController@index');
+	Route::get("/dashboard",'OrdersController@index');
+
+	Route::resource('orders', 'OrdersController');
+	Route::resource('products', 'ProductsController');
+	Route::resource('categories', 'CategoriesController');
+	Route::resource('delivers', 'DeliversController');
 	
 });

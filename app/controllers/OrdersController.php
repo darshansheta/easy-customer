@@ -10,7 +10,8 @@ class OrdersController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$orders = Order::with('product','user','category')->get();
+		return View::make("admin.orders.index")->with('orders',$orders);
 	}
 
 	/**
@@ -231,13 +232,14 @@ class OrdersController extends \BaseController {
 				});
 
 
-				$response['success'] = false;
+				$response['success'] = true;
 				$response['product'] = $product->email;
 				$response['order_id'] = $order->id;
 				$response['order_tree_id'] = $order_tree_id;
 				$response['user'] = Auth::user()->toArray();
 				$response['message'] = "Order placed sucessfully";
-				return Response::json($response,self::$errorStatusCode);
+				return $response;
+				//return Response::json($response,self::$errorStatusCode);
 				 
 		}else{
 			$response['success'] = false;

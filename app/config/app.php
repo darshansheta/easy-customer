@@ -124,6 +124,7 @@ return array(
 		'Way\Generators\GeneratorsServiceProvider',
 		'Jenssegers\Agent\AgentServiceProvider',
 		'Barryvdh\DomPDF\ServiceProvider',
+		'Maatwebsite\Excel\ExcelServiceProvider',
 
 	),
 
@@ -193,6 +194,7 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Agent'           => 'Jenssegers\Agent\Facades\Agent',
 		'PDF' => 'Barryvdh\DomPDF\Facade',
+		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
 	),
 

@@ -1,0 +1,40 @@
+<?php $__env->startSection('content'); ?>
+<div class="row">
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">Delivers</h3>
+		  </div>
+		  <div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Pincode</th>
+								<th>Facility Type</th>
+								<th>Phone</th>
+								<th>Email</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($delivers as $deliver): ?>
+							<tr>
+								<td><?php echo $deliver->id; ?></td>
+								<td><?php echo $deliver->pincode; ?></td>
+								<td><?php echo $deliver->facility; ?></td>
+								<td><?php echo $deliver->phone; ?></td>
+								<td><?php echo $deliver->email; ?></td>
+								<td>
+									<a type="button" class="btn btn-default" href="<?php echo URL::to('/admin/delivers/'.$deliver->id.'/edit'); ?>">Edit</a>
+								</td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+		  </div>
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('admin.layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

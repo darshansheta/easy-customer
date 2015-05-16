@@ -113,3 +113,17 @@ Route::filter('auth.token', function($route, $request)
     //return $user;
 
 });
+Route::filter('auth.admin', function($route, $request)
+{
+    
+	if (Auth::check()){
+		$id = Auth::id();
+		if($id == 1){
+
+		}else{
+			return Redirect::to('/');
+		}
+	}else{
+		return Redirect::to('/admin/login');
+	}
+});
